@@ -1,5 +1,6 @@
 import logging
 from enum import StrEnum
+from typing import ClassVar
 
 from langchain.embeddings import Embeddings
 from langchain_huggingface import HuggingFaceEmbeddings
@@ -15,11 +16,11 @@ class EmbeddingProvider(StrEnum):
 
 
 class EmbeddingFactory:
-    _registry: dict[EmbeddingProvider, type[Embeddings]] = {
+    _registry: ClassVar[dict[EmbeddingProvider, type[Embeddings]]] = {
         EmbeddingProvider.OPENAI: OpenAIEmbeddings,
         EmbeddingProvider.HUGGINGFACE: HuggingFaceEmbeddings,
     }
-    _instances: dict[str, Embeddings] = {}
+    _instances: ClassVar[dict[str, Embeddings]] = {}
 
     @classmethod
     def create(
@@ -47,4 +48,8 @@ class EmbeddingFactory:
             model=rag_settings.embedding_model,
             api_key=rag_settings.embedding_api_key,
             base_url=rag_settings.embedding_base_url,
+            check_embedding_ctx_length=False,
+            model_kwargs={
+                "encoding_format": "float",
+            },
         )

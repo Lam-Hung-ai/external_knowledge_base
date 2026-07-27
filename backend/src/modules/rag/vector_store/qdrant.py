@@ -1,7 +1,7 @@
 from langchain_core.embeddings import Embeddings
 from langchain_core.vectorstores import VectorStore
 from langchain_qdrant import FastEmbedSparse, QdrantVectorStore, RetrievalMode
-from modules.rag.ingestion.embedding import EmbeddingFactory
+from modules.rag.embedding.embedding import EmbeddingFactory
 from modules.rag.settings import rag_settings
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import (
@@ -21,7 +21,7 @@ class Qdrant:
         self.client = QdrantClient(url=url or rag_settings.vector_database_url)
         self.vector_config = {
             "dense": VectorParams(
-                size=1024,
+                size=rag_settings.embedding_dimension,
                 distance=Distance.COSINE,
                 on_disk=False,
             )

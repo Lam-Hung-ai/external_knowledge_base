@@ -1,14 +1,12 @@
-from langchain_text_splitters.character import RecursiveCharacterTextSplitter
+from modules.rag.reranker import ReRanker
 
-with open("sample.txt") as f:
-    data = f.read()
-
-print(data)
-splitter = RecursiveCharacterTextSplitter(
-    separators=["\n\n", "\n", ".", " ", ""], chunk_size=500, chunk_overlap=50
+rerank = ReRanker.from_environment()
+rerank.rerank(
+    query="What is the capital of France?",
+    documents=[
+        "The capital of France is Paris.",
+        "France is a country in Europe.",
+        "The Eiffel Tower is located in Paris.",
+    ],
+    top_n=2,
 )
-# splitter = RecursiveCharacterTextSplitter(chunk_size=1024, chunk_overlap=100)
-chunks = splitter.split_text(data)
-print("-" * 10)
-for i, chunk in enumerate(chunks):
-    print(f"{i}: {chunk}")

@@ -28,7 +28,6 @@ class DoclingDocumentProcessor:
             omit_header_on_overflow=False,
             merge_peers=True,
             always_emit_headings=False,
-            delim="\n\n",
         )
 
     def _convert_document(self, file_path: str | Path) -> DoclingDocument:

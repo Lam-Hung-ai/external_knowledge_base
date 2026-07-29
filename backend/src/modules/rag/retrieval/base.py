@@ -1,5 +1,6 @@
 from abc import ABC
-from typing import Sequence
+from collections.abc import Sequence
+
 from langchain.messages import AnyMessage
 from langchain_core.documents import Document
 

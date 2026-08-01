@@ -7,10 +7,7 @@ export default function ChatLayout({
   return (
     <SidebarProvider>
       <ChatSidebar />
-      <main>
-        <SidebarTrigger />
-        {children}
-      </main>
+      <main>{children}</main>
     </SidebarProvider>
   );
 }

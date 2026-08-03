@@ -1,6 +1,13 @@
-export function Logo() {
+import { cn } from "@/lib/utils";
+
+export function Logo({ className }: { className?: string }) {
   return (
-    <div className="flex min-w-0 items-center gap-1 overflow-hidden whitespace-nowrap font-mono font-semibold uppercase tracking-wider text-black">
+    <div
+      className={cn(
+        "flex min-w-0 items-center gap-1 overflow-hidden whitespace-nowrap font-mono font-semibold uppercase tracking-wider text-black",
+        className,
+      )}
+    >
       <span className="shrink-0 text-neutral-400">{"//"}</span>
 
       <span className="truncate whitespace-nowrap group-data-[collapsible=icon]:hidden">

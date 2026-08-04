@@ -31,10 +31,7 @@ export default function ChatSidebar() {
         </div>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton
-              render={<Link href="/chat" />}
-              tooltip="New chat"
-            >
+            <SidebarMenuButton render={<Link href="/" />} tooltip="New chat">
               <MessageCirclePlus className="shrink-0" />
 
               <span className="group-data-[collapsible=icon]:hidden">

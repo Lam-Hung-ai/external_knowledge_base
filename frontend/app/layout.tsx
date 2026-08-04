@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import ChatSidebar from "@/features/chat/components/chat-sidebar";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -29,7 +31,14 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <TooltipProvider>{children}</TooltipProvider>
+        <TooltipProvider>
+          <SidebarProvider className="h-svh min-h-0 overflow-hidden">
+            <ChatSidebar />
+            <SidebarInset className="h-full min-h-0 min-w-0 overflow-hidden">
+              {children}
+            </SidebarInset>
+          </SidebarProvider>
+        </TooltipProvider>
       </body>
     </html>
   );

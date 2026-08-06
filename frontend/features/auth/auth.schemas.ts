@@ -1,8 +1,37 @@
 import * as z from "zod";
+
 export const loginSchema = z.object({
-  email: z.email(),
+  email: z
+    .string()
+    .trim()
+    .pipe(z.email({ message: "Enter a valid email address." })),
   password: z
     .string()
-    .min(8, "The password must be more than 8 characters long."),
+    .min(1, "Enter your password.")
+    .max(128, "Password must be at most 128 characters."),
 });
-export type loginType = z.infer<typeof loginSchema>;
+
+export const signupSchema = z
+  .object({
+    name: z
+      .string()
+      .trim()
+      .min(1, "Enter your name.")
+      .max(50, "Name must be at most 50 characters."),
+    email: z
+      .string()
+      .trim()
+      .pipe(z.email({ message: "Enter a valid email address." })),
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters.")
+      .max(128, "Password must be at most 128 characters."),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match.",
+    path: ["confirmPassword"],
+  });
+
+export type LoginInput = z.infer<typeof loginSchema>;
+export type SignupInput = z.infer<typeof signupSchema>;

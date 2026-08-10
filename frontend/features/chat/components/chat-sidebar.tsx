@@ -12,15 +12,16 @@ import {
   SidebarMenuItem,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { getSession } from "@/lib/auth-session";
 import { MessageCircle, MessageCirclePlus } from "lucide-react";
 import Link from "next/link";
 
-export default function ChatSidebar() {
+export default async function ChatSidebar() {
   const chats = Array.from({ length: 100 }, (_, index) => ({
     id: index + 1,
     title: `Đoạn chat ${index + 1}`,
   }));
-
+  const session = await getSession();
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
@@ -71,15 +72,15 @@ export default function ChatSidebar() {
             <SidebarMenuButton size="lg" tooltip="Nguyen Van Lam Hung">
               <Avatar className="size-8 shrink-0 rounded-lg">
                 <AvatarImage
-                  src="https://github.com/shadcn.png"
-                  alt="Nguyen Van Lam Hung"
+                  src={session?.user?.image || ""}
+                  alt={session?.user?.name || ""}
                 />
-                <AvatarFallback>NH</AvatarFallback>
+                <AvatarFallback>{session?.user?.name || "ND"}</AvatarFallback>
               </Avatar>
 
               <div className="min-w-0 flex-1 group-data-[collapsible=icon]:hidden">
                 <span className="block truncate text-sm font-medium">
-                  Nguyen Van Lam Hung
+                  {session?.user?.name || "Not defined"}
                 </span>
               </div>
             </SidebarMenuButton>

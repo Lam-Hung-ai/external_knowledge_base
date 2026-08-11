@@ -1,15 +1,13 @@
-from collections.abc import AsyncIterable
-
+from api.main import api_router
 from fastapi import FastAPI
-from fastapi.sse import EventSourceResponse, ServerSentEvent
+from starlette.middleware.cors import CORSMiddleware
 
 app = FastAPI()
-
-
-@app.get("/chat", response_class=EventSourceResponse)
-async def chat_stream() -> AsyncIterable[ServerSentEvent]:
-    texts = ["Hello", "My", "name", "is", "Hung"]
-    for text in texts:
-        yield ServerSentEvent(data=text, event="token")
-    print("Done")
-    yield ServerSentEvent(data="[Done]", event="done")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+app.include_router(api_router)

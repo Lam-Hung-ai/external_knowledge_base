@@ -1,12 +1,15 @@
-from modules.rag.reranker import ReRanker
+from collections.abc import AsyncIterable
 
-rerank = ReRanker.from_environment()
-rerank.rerank(
-    query="What is the capital of France?",
-    documents=[
-        "The capital of France is Paris.",
-        "France is a country in Europe.",
-        "The Eiffel Tower is located in Paris.",
-    ],
-    top_n=2,
-)
+from fastapi import FastAPI
+from fastapi.sse import EventSourceResponse, ServerSentEvent
+
+app = FastAPI()
+
+
+@app.get("/chat", response_class=EventSourceResponse)
+async def chat_stream() -> AsyncIterable[ServerSentEvent]:
+    texts = ["Hello", "My", "name", "is", "Hung"]
+    for text in texts:
+        yield ServerSentEvent(data=text, event="token")
+    print("Done")
+    yield ServerSentEvent(data="[Done]", event="done")

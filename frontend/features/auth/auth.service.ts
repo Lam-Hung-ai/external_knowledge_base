@@ -3,18 +3,18 @@
 import { APIError } from "better-auth";
 
 import { auth } from "@/lib/auth";
-import { loginSchema, signupSchema } from "../auth.schemas";
+import { loginSchema, signupSchema } from "./auth.schemas";
 
 export type AuthActionResult =
   | { success: true }
   | {
-      success: false;
-      code:
-        | "INVALID_INPUT"
-        | "INVALID_CREDENTIALS"
-        | "EMAIL_IN_USE"
-        | "INTERNAL_ERROR";
-    };
+    success: false;
+    code:
+    | "INVALID_INPUT"
+    | "INVALID_CREDENTIALS"
+    | "EMAIL_IN_USE"
+    | "INTERNAL_ERROR";
+  };
 
 function getBetterAuthErrorCode(error: unknown) {
   if (!(error instanceof APIError)) {

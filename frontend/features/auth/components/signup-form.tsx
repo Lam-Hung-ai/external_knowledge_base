@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { signupWithEmail } from "../actions/auth.actions";
+import { signupWithEmail } from "../auth.service";
 import { signupSchema, type SignupInput } from "../auth.schemas";
 import { useGoogleSignIn } from "../hooks/use-google-sign-in";
 import { GoogleIcon } from "./google-icon";

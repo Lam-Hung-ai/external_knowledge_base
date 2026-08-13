@@ -15,12 +15,10 @@ import {
 import { getSession } from "@/lib/auth-session";
 import { MessageCircle, MessageCirclePlus } from "lucide-react";
 import Link from "next/link";
+import { listAllChats } from "../chat.repository";
 
 export default async function ChatSidebar() {
-  const chats = Array.from({ length: 100 }, (_, index) => ({
-    id: index + 1,
-    title: `Đoạn chat ${index + 1}`,
-  }));
+  const chats = await listAllChats({ limit: 10 }).then((res) => res.data || []);
   const session = await getSession();
   return (
     <Sidebar collapsible="icon">
@@ -52,7 +50,7 @@ export default async function ChatSidebar() {
               <SidebarMenuItem key={chat.id}>
                 <SidebarMenuButton
                   render={<Link href={`/chat/${chat.id}`} />}
-                  tooltip={chat.title}
+                  // tooltip={chat.title}
                 >
                   <MessageCircle className="shrink-0" />
 

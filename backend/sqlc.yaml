@@ -8,14 +8,14 @@ plugins:
 
 sql:
   - engine: postgresql
-    schema: db/schema
-    queries: db/queries
+    schema: ../db/schema
+    queries: ../db/queries
 
     codegen:
       - plugin: py
-        out: app/db/generated
+        out: api/generated/queries
         options:
-          package: app.db.generated
+          package: api.generated.queries
           emit_async_querier: true
           emit_str_enum: true
           emit_pydantic_models: true

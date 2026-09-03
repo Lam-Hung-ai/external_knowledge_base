@@ -25,10 +25,10 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { loginWithEmail } from "../actions/auth.actions";
 import { loginSchema, type LoginInput } from "../auth.schemas";
 import { useGoogleSignIn } from "../hooks/use-google-sign-in";
 import { GoogleIcon } from "./google-icon";
+import {loginWithEmail} from "@/features/auth/auth.service";
 
 export function LoginForm({
   className,

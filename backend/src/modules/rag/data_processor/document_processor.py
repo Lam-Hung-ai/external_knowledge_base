@@ -9,6 +9,7 @@ from docling_core.transforms.chunker.hybrid_chunker import HybridChunker
 from docling_core.transforms.chunker.tokenizer.huggingface import HuggingFaceTokenizer
 from docling_core.types.doc.document import DoclingDocument
 from langchain_core.documents import Document
+
 from modules.rag.settings import rag_settings
 
 ALLOWWED_FORMATS = [InputFormat.DCLX, InputFormat.PDF, InputFormat.MD, InputFormat.HTML]

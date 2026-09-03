@@ -5,6 +5,7 @@ from typing import ClassVar
 from langchain.embeddings import Embeddings
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_openai import OpenAIEmbeddings
+
 from modules.rag.settings import rag_settings
 
 logger = logging.getLogger(__name__)

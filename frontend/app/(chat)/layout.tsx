@@ -1,7 +1,6 @@
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import ChatSidebar from "@/features/chat/components/chat-sidebar";
 import { requireSession } from "@/lib/auth-session";
-
 export default async function ChatLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {

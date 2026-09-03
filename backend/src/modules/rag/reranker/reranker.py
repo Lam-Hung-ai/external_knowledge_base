@@ -3,8 +3,9 @@ from typing import Self
 
 import httpx
 from langchain_core.documents import Document
-from modules.rag.settings import rag_settings
 from pydantic import AliasChoices, BaseModel, Field
+
+from modules.rag.settings import rag_settings
 
 from .base import BaseRanker
 

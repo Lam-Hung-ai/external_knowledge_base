@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from langchain_core.vectorstores import VectorStore
+
 from modules.rag.data_processor.base import DocumentProcessor
 from modules.rag.data_processor.document_processor import DoclingDocumentProcessor
 

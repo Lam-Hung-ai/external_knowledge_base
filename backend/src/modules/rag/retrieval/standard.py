@@ -3,6 +3,7 @@ from collections.abc import Sequence
 from langchain.messages import AnyMessage
 from langchain_core.documents import Document
 from langchain_core.vectorstores import VectorStore
+
 from modules.rag.reranker import BaseRanker
 
 from .base import BaseRetrieval

@@ -1,8 +1,6 @@
 from langchain_core.embeddings import Embeddings
 from langchain_core.vectorstores import VectorStore
 from langchain_qdrant import FastEmbedSparse, QdrantVectorStore, RetrievalMode
-from modules.rag.embedding.embedding import EmbeddingFactory
-from modules.rag.settings import rag_settings
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import (
     Distance,
@@ -10,6 +8,9 @@ from qdrant_client.http.models import (
     SparseVectorParams,
     VectorParams,
 )
+
+from modules.rag.embedding.embedding import EmbeddingFactory
+from modules.rag.settings import rag_settings
 
 
 class Qdrant:

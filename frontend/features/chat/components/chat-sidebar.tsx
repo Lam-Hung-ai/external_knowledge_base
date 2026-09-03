@@ -16,9 +16,14 @@ import { getSession } from "@/lib/auth-session";
 import { MessageCircle, MessageCirclePlus } from "lucide-react";
 import Link from "next/link";
 import { listAllChats } from "../chat.repository";
+import { listUserKnowledges } from "@/features/knowledge/knowledge.repository";
+import { KnowledgeGroup } from "@/features/knowledge/components/knowledge-group";
 
 export default async function ChatSidebar() {
-  const chats = await listAllChats({ limit: 10 }).then((res) => res.data || []);
+  const [chats, knowledges] = await Promise.all([
+    listAllChats({ limit: 10 }),
+    listUserKnowledges({ limit: 50 }),
+  ]);
   const session = await getSession();
   return (
     <Sidebar collapsible="icon">
@@ -42,6 +47,8 @@ export default async function ChatSidebar() {
       </SidebarHeader>
 
       <SidebarContent>
+        <KnowledgeGroup knowledges={knowledges} />
+
         <SidebarGroup>
           <SidebarGroupLabel>Chats</SidebarGroupLabel>
 
@@ -50,12 +57,12 @@ export default async function ChatSidebar() {
               <SidebarMenuItem key={chat.id}>
                 <SidebarMenuButton
                   render={<Link href={`/chat/${chat.id}`} />}
-                  // tooltip={chat.title}
+                  tooltip={chat.title ?? "Untitled chat"}
                 >
                   <MessageCircle className="shrink-0" />
 
                   <span className="group-data-[collapsible=icon]:hidden">
-                    {chat.title}
+                    {chat.title ?? "Untitled chat"}
                   </span>
                 </SidebarMenuButton>
               </SidebarMenuItem>

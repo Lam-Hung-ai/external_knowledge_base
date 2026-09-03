@@ -65,6 +65,41 @@ CREATE TABLE chat_message (
     updated_at timestamp with time zone DEFAULT now()
 );
 
+CREATE TABLE checkpoint_blobs (
+    thread_id text NOT NULL,
+    checkpoint_ns text DEFAULT ''::text NOT NULL,
+    channel text NOT NULL,
+    version text NOT NULL,
+    type text NOT NULL,
+    blob bytea
+);
+
+CREATE TABLE checkpoint_migrations (
+    v integer NOT NULL
+);
+
+CREATE TABLE checkpoint_writes (
+    thread_id text NOT NULL,
+    checkpoint_ns text DEFAULT ''::text NOT NULL,
+    checkpoint_id text NOT NULL,
+    task_id text NOT NULL,
+    idx integer NOT NULL,
+    channel text NOT NULL,
+    type text,
+    blob bytea NOT NULL,
+    task_path text DEFAULT ''::text NOT NULL
+);
+
+CREATE TABLE checkpoints (
+    thread_id text NOT NULL,
+    checkpoint_ns text DEFAULT ''::text NOT NULL,
+    checkpoint_id text NOT NULL,
+    parent_checkpoint_id text,
+    type text,
+    checkpoint jsonb NOT NULL,
+    metadata jsonb DEFAULT '{}'::jsonb NOT NULL
+);
+
 CREATE TABLE file (
     id uuid DEFAULT uuidv7() NOT NULL,
     user_id uuid,
@@ -86,6 +121,14 @@ CREATE TABLE invitation (
     expires_at timestamp with time zone NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     inviter_id uuid NOT NULL
+);
+
+CREATE TABLE jwks (
+    id uuid DEFAULT uuidv7() NOT NULL,
+    public_key text NOT NULL,
+    private_key text NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    expires_at timestamp with time zone
 );
 
 CREATE TABLE knowledge (
@@ -171,11 +214,26 @@ ALTER TABLE ONLY chat
 ALTER TABLE ONLY chat
     ADD CONSTRAINT chat_share_id_key UNIQUE (share_id);
 
+ALTER TABLE ONLY checkpoint_blobs
+    ADD CONSTRAINT checkpoint_blobs_pkey PRIMARY KEY (thread_id, checkpoint_ns, channel, version);
+
+ALTER TABLE ONLY checkpoint_migrations
+    ADD CONSTRAINT checkpoint_migrations_pkey PRIMARY KEY (v);
+
+ALTER TABLE ONLY checkpoint_writes
+    ADD CONSTRAINT checkpoint_writes_pkey PRIMARY KEY (thread_id, checkpoint_ns, checkpoint_id, task_id, idx);
+
+ALTER TABLE ONLY checkpoints
+    ADD CONSTRAINT checkpoints_pkey PRIMARY KEY (thread_id, checkpoint_ns, checkpoint_id);
+
 ALTER TABLE ONLY file
     ADD CONSTRAINT file_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY invitation
     ADD CONSTRAINT invitation_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY jwks
+    ADD CONSTRAINT jwks_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY knowledge_file
     ADD CONSTRAINT knowledge_file_pkey PRIMARY KEY (id);
@@ -214,6 +272,12 @@ ALTER TABLE ONLY verification
     ADD CONSTRAINT verification_pkey PRIMARY KEY (id);
 
 CREATE INDEX "account_userId_idx" ON account USING btree (user_id);
+
+CREATE INDEX checkpoint_blobs_thread_id_idx ON checkpoint_blobs USING btree (thread_id);
+
+CREATE INDEX checkpoint_writes_thread_id_idx ON checkpoint_writes USING btree (thread_id);
+
+CREATE INDEX checkpoints_thread_id_idx ON checkpoints USING btree (thread_id);
 
 CREATE INDEX idx_chat_file_file_id ON chat_file USING btree (file_id);
 

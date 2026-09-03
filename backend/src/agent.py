@@ -1,6 +1,7 @@
 # Step 1: Define tools and model
 
-import operator
+import sys
+from pathlib import Path
 from typing import Annotated, Literal
 
 from dotenv import load_dotenv
@@ -8,13 +9,24 @@ from langchain.chat_models import init_chat_model
 from langchain.messages import AnyMessage, SystemMessage, ToolMessage
 from langchain.tools import tool
 from langgraph.graph import END, START, StateGraph
+from langgraph.graph.message import add_messages
 from typing_extensions import TypedDict
 
-from modules.agents.checkpointer import create_postgres_saver
+# Đảm bảo root directory luôn có trong sys.path khi LangGraph CLI chạy
+ROOT_DIR = Path(__file__).resolve().parent.parent
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
+
+from src.modules.agents.checkpointer import create_postgres_saver
 
 load_dotenv()
 
-model = init_chat_model("openrouter:liquid/lfm-2.5-2.6b:free", temperature=0)
+model = init_chat_model(
+    "openrouter:liquid/lfm-2.5-2.6b:free",
+    temperature=0,
+    streaming=True,
+    reasoning={"effort": "medium", "summary": "auto"},
+)
 
 
 # Define tools
@@ -60,7 +72,7 @@ model_with_tools = model.bind_tools(tools)
 
 
 class MessagesState(TypedDict):
-    messages: Annotated[list[AnyMessage], operator.add]
+    messages: Annotated[list[AnyMessage], add_messages]
     llm_calls: int
 
 
@@ -95,7 +107,9 @@ def tool_node(state: MessagesState):
     for tool_call in state["messages"][-1].tool_calls:
         tool = tools_by_name[tool_call["name"]]
         observation = tool.invoke(tool_call["args"])
-        result.append(ToolMessage(content=observation, tool_call_id=tool_call["id"]))
+        result.append(
+            ToolMessage(content=str(observation), tool_call_id=tool_call["id"])
+        )
     return {"messages": result}
 
 
@@ -131,6 +145,13 @@ agent_builder.add_edge(START, "llm_call")
 agent_builder.add_conditional_edges("llm_call", should_continue, ["tool_node", END])
 agent_builder.add_edge("tool_node", "llm_call")
 
-# Step 7: Compile agent with PostgreSQL checkpointer
-checkpointer = create_postgres_saver()
-agent = agent_builder.compile(checkpointer=checkpointer)
+# Step 7: Compile agent
+# Lưu ý: Khi chạy qua LangGraph API/CLI (langgraph.json), nền tảng tự động quản lý
+# persistence qua biến môi trường POSTGRES_URI trong .env.
+agent = agent_builder.compile()
+
+
+def get_agent_with_checkpointer():
+    """Hàm tiện ích khởi tạo agent kèm Postgres checkpointer cho standalone script."""
+    checkpointer = create_postgres_saver()
+    return agent_builder.compile(checkpointer=checkpointer)

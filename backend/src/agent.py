@@ -3,11 +3,16 @@
 import operator
 from typing import Annotated, Literal
 
+from dotenv import load_dotenv
 from langchain.chat_models import init_chat_model
 from langchain.messages import AnyMessage, SystemMessage, ToolMessage
 from langchain.tools import tool
 from langgraph.graph import END, START, StateGraph
 from typing_extensions import TypedDict
+
+from modules.agents.checkpointer import create_postgres_saver
+
+load_dotenv()
 
 model = init_chat_model("openrouter:liquid/lfm-2.5-2.6b:free", temperature=0)
 
@@ -126,5 +131,6 @@ agent_builder.add_edge(START, "llm_call")
 agent_builder.add_conditional_edges("llm_call", should_continue, ["tool_node", END])
 agent_builder.add_edge("tool_node", "llm_call")
 
-# Compile the agent
-agent = agent_builder.compile()
+# Step 7: Compile agent with PostgreSQL checkpointer
+checkpointer = create_postgres_saver()
+agent = agent_builder.compile(checkpointer=checkpointer)
